@@ -1,6 +1,6 @@
 "use server";
 
-import { PostStatus, SkillType } from "@prisma/client";
+import { EmploymentType, PostStatus, SkillType, WorkplaceType } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
@@ -44,6 +44,12 @@ export async function createJobPost(
         title: data.title,
         description: data.description,
         companyName: data.companyName,
+        employmentType: data.employmentType as EmploymentType,
+        workplaceType: data.workplaceType as WorkplaceType,
+        location: data.location || null,
+        salary: data.salary || null,
+        applicationUrl: data.applicationUrl || null,
+        applicationEmail: data.applicationEmail || null,
         status: PostStatus.ACTIVE,
         userId: user.id,
         organizationId: user.organizationId,
@@ -127,6 +133,12 @@ export async function updateJobPost(
           title: data.title,
           description: data.description,
           companyName: data.companyName,
+          employmentType: data.employmentType as EmploymentType,
+          workplaceType: data.workplaceType as WorkplaceType,
+          location: data.location || null,
+          salary: data.salary || null,
+          applicationUrl: data.applicationUrl || null,
+          applicationEmail: data.applicationEmail || null,
           weights: {
             create: data.skills.map((skill) => ({
               name: skill.name,

@@ -56,6 +56,29 @@ enum MatchStatus {
   REJECTED
 }
 
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  TEMPORARY
+  INTERNSHIP
+  FREELANCE
+}
+
+enum WorkplaceType {
+  ON_SITE
+  HYBRID
+  REMOTE
+}
+
+enum JobWebsiteProvider {
+  LINKEDIN
+  INDEED
+  GLASSDOOR
+  MONSTER
+  ZIPRECRUITER
+}
+
 model Account {
   id                String   @id @default(cuid())
   userId            String
@@ -104,6 +127,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   jobPosts       JobPost[]
+  oauthStates    OAuthState[]
 
   @@index([organizationId])
   @@map("users")
@@ -165,20 +189,29 @@ model DocumentNote {
 }
 
 model JobPost {
-  id             String        @id @default(cuid())
-  title          String
-  description    String
-  companyName    String
-  status         PostStatus    @default(ACTIVE)
-  weights        SkillWeight[]
-  matches        Match[]
-  address        String?
-  userId         String
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId String
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  companyName        String
+  status             PostStatus          @default(ACTIVE)
+  employmentType     EmploymentType      @default(FULL_TIME)
+  workplaceType      WorkplaceType       @default(ON_SITE)
+  location           String?
+  salary             String?
+  applicationUrl     String?
+  applicationEmail   String?
+  weights            SkillWeight[]
+  matches            Match[]
+  address            String?
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId     String
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  archivedAt         DateTime?
+  deletedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  jobWebsitePostings JobWebsitePosting[]
 
   @@index([organizationId])
   @@map("job_posts")
@@ -198,12 +231,13 @@ model SkillWeight {
 }
 
 model Candidate {
-  id      String  @id @default(cuid())
-  name    String
-  email   String  @unique
-  address String?
-  cvUrl   String
-
+  id             String           @id @default(cuid())
+  name           String
+  email          String           @unique
+  address        String?
+  cvUrl          String
+  archivedAt     DateTime?
+  deletedAt      DateTime?
   skills         CandidateSkill[]
   workExperience WorkExperience[]
   achievements   Achievement[]
@@ -214,6 +248,7 @@ model Candidate {
   processing     Boolean          @default(true)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
+  certificates   Certificate[]
 
   @@map("candidates")
 }
@@ -231,6 +266,18 @@ model Education {
   updatedAt   DateTime  @updatedAt
 
   @@map("education")
+}
+
+model Certificate {
+  id          String    @id @default(cuid())
+  name        String
+  date        DateTime
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("certificates")
 }
 
 model CandidateSkill {
@@ -310,17 +357,19 @@ model Match {
 }
 
 model Organization {
-  id          String               @id @default(cuid())
-  name        String
-  color       String?
-  users       User[]
-  invitations OrganizationInvite[]
-  tags        Tag[]
-  documents   Document[]
-  jobPosts    JobPost[]
-  candidates  Candidate[]
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  id                     String                  @id @default(cuid())
+  name                   String
+  color                  String?
+  users                  User[]
+  invitations            OrganizationInvite[]
+  tags                   Tag[]
+  documents              Document[]
+  jobPosts               JobPost[]
+  candidates             Candidate[]
+  jobWebsiteIntegrations JobWebsiteIntegration[]
+  oauthStates            OAuthState[]
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
 
   @@map("organizations")
 }
@@ -338,4 +387,52 @@ model OrganizationInvite {
 
   @@unique([email, organizationId])
   @@map("organization_invites")
+}
+
+model JobWebsiteIntegration {
+  id             String              @id @default(cuid())
+  provider       JobWebsiteProvider
+  accessToken    String
+  refreshToken   String?
+  tokenExpiry    DateTime?
+  isActive       Boolean             @default(true)
+  organizationId String
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  jobPostings    JobWebsitePosting[]
+
+  @@unique([provider, organizationId])
+  @@map("job_website_integrations")
+}
+
+model JobWebsitePosting {
+  id            String                @id @default(cuid())
+  externalId    String?
+  externalUrl   String?
+  status        String                @default("PENDING") // PENDING, POSTED, FAILED
+  postId        String
+  post          JobPost               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  integrationId String
+  integration   JobWebsiteIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@unique([postId, integrationId])
+  @@map("job_website_postings")
+}
+
+model OAuthState {
+  id             String              @id @default(cuid())
+  state          String              @unique
+  provider       JobWebsiteProvider
+  userId         String
+  organizationId String
+  expiresAt      DateTime
+  createdAt      DateTime            @default(now())
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([state])
+  @@map("oauth_states")
 }
