@@ -396,6 +396,7 @@ model JobWebsiteIntegration {
   refreshToken   String?
   tokenExpiry    DateTime?
   isActive       Boolean             @default(true)
+  metadata       Json?               // Added metadata field to store additional information
   organizationId String
   organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime            @default(now())

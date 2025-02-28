@@ -21,6 +21,11 @@ export default async function CandidatePage({ params }: CandidatePageProps) {
     notFound();
   }
 
+  // Get the job title from the first match if available
+  const jobTitle = candidate.matches && candidate.matches.length > 0
+    ? candidate.matches[0].post.title
+    : "Interview";
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
@@ -29,8 +34,11 @@ export default async function CandidatePage({ params }: CandidatePageProps) {
           text="View and manage candidate details"
         />
         <PlanMeetingDialog 
-        candidateId={candidate.id} 
-        candidateEmail={candidate.email} />
+          candidateId={candidate.id} 
+          candidateEmail={candidate.email}
+          candidateName={candidate.name}
+          jobTitle={jobTitle}
+        />
       </div>
 
       <Suspense fallback={<CandidateDetailsSkeleton />}>

@@ -28,7 +28,7 @@ const OAUTH_CONFIG = {
     tokenUrl: "https://www.linkedin.com/oauth/v2/accessToken",
     clientId: process.env.LINKEDIN_CLIENT_ID || "",
     clientSecret: process.env.LINKEDIN_CLIENT_SECRET || "",
-    scope: "r_liteprofile w_member_social r_emailaddress w_organization_social rw_organization_admin",
+    scope: "r_liteprofile w_member_social r_emailaddress w_organization_social rw_organization_admin r_ads r_ads_reporting w_ads",
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/linkedin`,
   },
   "INDEED": {
@@ -179,6 +179,7 @@ export async function getJobWebsiteIntegrations(): Promise<JobWebsiteResponse> {
         provider: true,
         isActive: true,
         createdAt: true,
+        metadata: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -468,6 +469,159 @@ export async function postJobToWebsites(
     return {
       success: false,
       message: "Failed to post job to websites. Please try again.",
+      error,
+    };
+  }
+}
+
+/**
+ * Fetches LinkedIn organizations for the user
+ */
+export async function fetchLinkedInOrganizations(): Promise<JobWebsiteResponse> {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user?.id) {
+      return {
+        success: false,
+        message: "Unauthorized. Please sign in.",
+        error: "UNAUTHORIZED",
+      };
+    }
+
+    if (!user.organizationId) {
+      return {
+        success: false,
+        message: "You must be part of an organization to manage integrations.",
+        error: "NO_ORGANIZATION",
+      };
+    }
+
+    // Find LinkedIn integration
+    const linkedInIntegration = await prisma.jobWebsiteIntegration.findFirst({
+      where: {
+        organizationId: user.organizationId,
+        provider: "LINKEDIN",
+        isActive: true,
+      },
+    });
+
+    if (!linkedInIntegration) {
+      return {
+        success: false,
+        message: "LinkedIn integration not found or inactive.",
+        error: "NO_INTEGRATION",
+      };
+    }
+
+    // In a real implementation, we would call the LinkedIn API to fetch organizations
+    // For now, we'll return a mock response
+    const mockOrganizations = [
+      {
+        id: "12345",
+        name: "Acme Corporation",
+        logoUrl: "https://example.com/acme-logo.png",
+        description: "A global leader in innovative solutions",
+      },
+      {
+        id: "67890",
+        name: "Tech Innovators Inc.",
+        logoUrl: "https://example.com/tech-innovators-logo.png",
+        description: "Pushing the boundaries of technology",
+      },
+      {
+        id: "13579",
+        name: "Global Enterprises Ltd.",
+        logoUrl: "https://example.com/global-enterprises-logo.png",
+        description: "Worldwide business solutions",
+      },
+    ];
+
+    return {
+      success: true,
+      message: "LinkedIn organizations retrieved successfully",
+      data: mockOrganizations,
+    };
+  } catch (error) {
+    console.error("Error fetching LinkedIn organizations:", error);
+    return {
+      success: false,
+      message: "Failed to fetch LinkedIn organizations. Please try again.",
+      error,
+    };
+  }
+}
+
+/**
+ * Links a LinkedIn organization to the user's organization
+ */
+export async function linkLinkedInOrganization(
+  linkedInOrgId: string,
+  linkedInOrgName: string
+): Promise<JobWebsiteResponse> {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user?.id) {
+      return {
+        success: false,
+        message: "Unauthorized. Please sign in.",
+        error: "UNAUTHORIZED",
+      };
+    }
+
+    if (!user.organizationId) {
+      return {
+        success: false,
+        message: "You must be part of an organization to manage integrations.",
+        error: "NO_ORGANIZATION",
+      };
+    }
+
+    // Find LinkedIn integration
+    const linkedInIntegration = await prisma.jobWebsiteIntegration.findFirst({
+      where: {
+        organizationId: user.organizationId,
+        provider: "LINKEDIN",
+      },
+    });
+
+    if (!linkedInIntegration) {
+      return {
+        success: false,
+        message: "LinkedIn integration not found.",
+        error: "NO_INTEGRATION",
+      };
+    }
+
+    // Update the integration with the LinkedIn organization ID and name
+    await prisma.jobWebsiteIntegration.update({
+      where: {
+        id: linkedInIntegration.id,
+      },
+      data: {
+        metadata: {
+          linkedInOrgId,
+          linkedInOrgName,
+        },
+      },
+    });
+
+    revalidatePath("/settings");
+    
+    return {
+      success: true,
+      message: `Successfully linked to LinkedIn organization: ${linkedInOrgName}`,
+      data: {
+        linkedInOrgId,
+        linkedInOrgName,
+      },
+    };
+  } catch (error) {
+    console.error("Error linking LinkedIn organization:", error);
+    return {
+      success: false,
+      message: "Failed to link LinkedIn organization. Please try again.",
       error,
     };
   }

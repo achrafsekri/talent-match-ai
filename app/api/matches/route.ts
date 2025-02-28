@@ -102,6 +102,8 @@ export async function POST(request: Request) {
       where: {
         id: candidateId,
         organizationId: organizationId,
+        archivedAt: null,
+        deletedAt: null,
       },
       include: {
         skills: true,
@@ -123,6 +125,8 @@ export async function POST(request: Request) {
       where: {
         status: "ACTIVE",
         organizationId: organizationId,
+        archivedAt: null,
+        deletedAt: null,
       },
       include: { weights: true },
     });
@@ -252,7 +256,13 @@ export async function GET(request: Request) {
         postId,
         post: {
           organizationId: user.organizationId!,
+          archivedAt: null,
+          deletedAt: null,
         },
+        candidate: {
+          archivedAt: null,
+          deletedAt: null,
+        }
       },
       include: {
         candidate: {

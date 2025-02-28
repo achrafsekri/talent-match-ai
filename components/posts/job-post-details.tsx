@@ -43,6 +43,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { JobPostEditDialog } from "./job-post-edit-dialog";
+import { LinkedInApplications } from "@/components/job-posts/linkedin-applications";
 
 interface JobPostDetailsProps {
   post: JobPostWithDetails;
@@ -268,6 +269,10 @@ export function JobPostDetails({ post }: JobPostDetailsProps) {
           )}
         </CardContent>
       </Card>
+
+      <div className="mt-8">
+        <LinkedInApplications jobPostId={post.id} />
+      </div>
     </div>
   );
 }

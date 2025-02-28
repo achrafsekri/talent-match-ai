@@ -37,6 +37,8 @@ export async function sendMatchEmails({
       where: {
         id: postId,
         organizationId: user.organizationId,
+        archivedAt: null,
+        deletedAt: null,
       },
     });
 
@@ -51,6 +53,12 @@ export async function sendMatchEmails({
         postId: postId,
         post: {
           organizationId: user.organizationId,
+          archivedAt: null,
+          deletedAt: null,
+        },
+        candidate: {
+          archivedAt: null,
+          deletedAt: null,
         },
       },
       include: {

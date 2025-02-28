@@ -26,6 +26,8 @@ export async function getCandidates(options: GetCandidatesOptions = {}) {
   const candidates = await prisma.candidate.findMany({
     where: {
       organizationId: user.organizationId,
+      archivedAt: null,
+      deletedAt: null,
       ...(skills && skills.length > 0
         ? {
             skills: {
@@ -46,6 +48,10 @@ export async function getCandidates(options: GetCandidatesOptions = {}) {
             status: {
               in: [MatchStatus.REJECTED, MatchStatus.HIRED],
             },
+          },
+          post: {
+            archivedAt: null,
+            deletedAt: null,
           },
         },
       },
@@ -94,6 +100,10 @@ export async function getCandidateById(id: string) {
               in: [MatchStatus.REJECTED, MatchStatus.HIRED],
             },
           },
+          post: {
+            archivedAt: null,
+            deletedAt: null,
+          },
         },
       },
     },
@@ -131,16 +141,22 @@ export async function getDashboardStats() {
 
     const [candidateCount, skillDistribution, dailyJobPosts] =
       await Promise.all([
-        // Get total candidates
+        // Get total candidates (excluding archived and deleted)
         prisma.candidate.count({
-          where: { organizationId: user.organizationId },
+          where: { 
+            organizationId: user.organizationId,
+            archivedAt: null,
+            deletedAt: null
+          },
         }),
-        // Get skill distribution
+        // Get skill distribution (excluding archived and deleted)
         prisma.jobPost
           .findMany({
             where: {
               organizationId: user.organizationId,
               status: "ACTIVE",
+              archivedAt: null,
+              deletedAt: null
             },
             select: {
               title: true,
@@ -159,6 +175,8 @@ export async function getDashboardStats() {
             by: ["createdAt"],
             where: {
               organizationId: user.organizationId,
+              archivedAt: null,
+              deletedAt: null,
               createdAt: {
                 gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
               },

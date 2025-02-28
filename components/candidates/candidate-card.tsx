@@ -26,6 +26,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { ItemActionsMenu } from "@/components/ui/item-actions-menu";
 
 interface CandidateCardProps {
   candidate: Candidate & {
@@ -71,12 +72,29 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
       <Card
         className="group relative min-h-[19em] cursor-pointer overflow-hidden bg-card transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5"
         onClick={(e) => {
-          // Prevent navigation if clicking on the delete button
-          if ((e.target as HTMLElement).closest("button")) return;
+          // Prevent navigation if clicking on the delete button or actions menu
+          if ((e.target as HTMLElement).closest("button") || 
+              (e.target as HTMLElement).closest("[data-actions-menu]")) return;
           router.push(`/candidates/${candidate.id}`);
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        {/* Position the actions menu at the absolute top right */}
+        <div 
+          className="absolute right-4 top-4 z-10" 
+          onClick={(e) => e.stopPropagation()}
+          data-actions-menu
+        >
+          <ItemActionsMenu
+            id={candidate.id}
+            type="candidate"
+            isArchived={candidate.archivedAt !== null}
+            showDelete={true}
+            onDelete={() => setIsDeleteDialogOpen(true)}
+          />
+        </div>
+        
         <CardHeader className="space-y-3 pb-6">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
@@ -87,15 +105,6 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
                 {candidate.email}
               </p>
             </div>
-            <Button
-              variant="destructive"
-              size="default"
-              className="relative z-10 opacity-0 transition-all duration-200 group-hover:opacity-100"
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              <Trash2 className="mr-2 size-4" />
-              Delete
-            </Button>
           </div>
           <div className="flex items-center gap-2.5 pt-2">
             <Badge variant="secondary" className="font-medium">

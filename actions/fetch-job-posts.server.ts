@@ -38,6 +38,8 @@ export async function fetchJobPosts(): Promise<FetchJobPostsResponse> {
     const posts = await prisma.jobPost.findMany({
       where: {
         organizationId: user.organizationId,
+        archivedAt: null,
+        deletedAt: null,
       },
       include: {
         weights: true,

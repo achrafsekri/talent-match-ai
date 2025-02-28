@@ -22,6 +22,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { ItemActionsMenu } from "@/components/ui/item-actions-menu";
 
 interface JobPostCardProps {
   post: JobPost & {
@@ -64,18 +65,25 @@ export function JobPostCard({ post }: JobPostCardProps) {
               </div>
             </div>
 
-            <Badge
-              variant={post.status === "ACTIVE" ? "default" : "secondary"}
-              className={cn(
-                "mt-1.5 w-fit text-xs font-medium uppercase",
-                post.status === "ACTIVE" &&
-                  "bg-green-500/15 text-green-600 dark:bg-green-500/25 dark:text-green-400",
-                post.status === "CLOSED" &&
-                  "bg-red-500/15 text-red-600 dark:bg-red-500/25 dark:text-red-400",
-              )}
-            >
-              {post.status.toLowerCase()}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant={post.status === "ACTIVE" ? "default" : "secondary"}
+                className={cn(
+                  "mt-1.5 w-fit text-xs font-medium uppercase",
+                  post.status === "ACTIVE" &&
+                    "bg-green-500/15 text-green-600 dark:bg-green-500/25 dark:text-green-400",
+                  post.status === "CLOSED" &&
+                    "bg-red-500/15 text-red-600 dark:bg-red-500/25 dark:text-red-400",
+                )}
+              >
+                {post.status.toLowerCase()}
+              </Badge>
+              <ItemActionsMenu
+                id={post.id}
+                type="job"
+                isArchived={post.archivedAt !== null}
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-between border-t pt-4">

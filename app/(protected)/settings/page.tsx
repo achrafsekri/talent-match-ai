@@ -7,7 +7,9 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { UserNameForm } from "@/components/forms/user-name-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { JobWebsiteIntegrationsSection } from "@/components/settings/job-website-integrations";
+import { CalendarIntegrationsSection } from "@/components/settings/calendar-integrations";
 import { OAuthCallbackHandler } from "@/components/settings/oauth-callback-handler";
+import { Separator } from "@/components/ui/separator";
 
 export const metadata = constructMetadata({
   title: "Settings – Entretien AI",
@@ -48,7 +50,7 @@ export default async function SettingsPage({
       >
         <TabsList className="mb-4">
           <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="integrations">Job Website Integrations</TabsTrigger>
+          <TabsTrigger value="integrations">Integrations</TabsTrigger>
         </TabsList>
         <TabsContent value="account" className="space-y-4">
           <div className="divide-y divide-muted pb-10">
@@ -57,8 +59,24 @@ export default async function SettingsPage({
             <DeleteAccountSection />
           </div>
         </TabsContent>
-        <TabsContent value="integrations" className="space-y-4">
-          <JobWebsiteIntegrationsSection organizationId={user.organizationId} />
+        <TabsContent value="integrations" className="space-y-8">
+          <div>
+            <h3 className="text-lg font-medium mb-1">Job Platforms</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Connect to job platforms to post jobs and manage applications.
+            </p>
+            <JobWebsiteIntegrationsSection organizationId={user.organizationId} />
+          </div>
+          
+          <Separator className="my-6" />
+          
+          <div>
+            <h3 className="text-lg font-medium mb-1">Calendar Integrations</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Connect your calendar to schedule interviews and manage appointments.
+            </p>
+            <CalendarIntegrationsSection organizationId={user.organizationId} />
+          </div>
         </TabsContent>
       </Tabs>
     </>

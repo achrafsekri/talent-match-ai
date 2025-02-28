@@ -3,13 +3,14 @@
 import { useState } from "react";
 import type { Match as MatchWithCandidate } from "@/types";
 import { Draggable } from "@hello-pangea/dnd";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Percent } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { MatchDetailsModal } from "./match-details-modal";
+import { ItemActionsMenu } from "@/components/ui/item-actions-menu";
 
 interface MatchCardProps {
   match: MatchWithCandidate;
@@ -25,6 +26,13 @@ export function MatchCard({
   onSelect,
 }: MatchCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Function to get score color class
+  const getScoreColorClass = (score: number) => {
+    if (score >= 80) return "text-green-600 bg-green-50 ring-green-200";
+    if (score >= 60) return "text-yellow-600 bg-yellow-50 ring-yellow-200";
+    return "text-gray-600 bg-gray-50 ring-gray-200";
+  };
 
   return (
     <>
@@ -44,17 +52,29 @@ export function MatchCard({
                   : "border-l-4 border-l-transparent",
               "hover:shadow-sm hover:ring-accent/20",
               snapshot.isDragging && "scale-[1.02] shadow-lg ring-accent/30",
+              "w-full"
             )}
             onClick={() => setIsModalOpen(true)}
           >
-            <CardContent className="flex flex-col gap-4 p-4">
+            <div 
+              className="absolute right-2 top-2 z-10" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ItemActionsMenu
+                id={match.candidate.id}
+                type="candidate"
+                isArchived={'archivedAt' in match.candidate ? match.candidate.archivedAt !== null : false}
+              />
+            </div>
+            
+            <CardContent className="flex flex-col gap-3 p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div
                   {...provided.dragHandleProps}
                   className="-ml-1 p-1 text-muted-foreground/50 hover:text-foreground/80"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <GripVertical className="size-5" />
+                  <GripVertical className="size-4 sm:size-5" />
                 </div>
                 {match.status === "NEW" && (
                   <div
@@ -84,14 +104,11 @@ export function MatchCard({
                       <span
                         className={cn(
                           "inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1",
-                          match.score >= 80
-                            ? "bg-green-100 text-green-900 ring-green-200"
-                            : match.score >= 60
-                              ? "bg-yellow-100 text-yellow-900 ring-yellow-200"
-                              : "bg-gray-100 text-gray-900 ring-gray-200",
+                          getScoreColorClass(match.score)
                         )}
                       >
-                        {Math.round(match.score)}%
+                        <Percent className="mr-1 size-3" />
+                        {Math.round(match.score)}
                       </span>
                     </div>
                   </div>
@@ -114,6 +131,18 @@ export function MatchCard({
                     )}
                   </div>
                 )}
+                
+                {/* Match score progress bar */}
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className={cn(
+                      "h-full rounded-full",
+                      match.score >= 80 ? "bg-green-500" : 
+                      match.score >= 60 ? "bg-yellow-500" : "bg-gray-400"
+                    )}
+                    style={{ width: `${match.score}%` }}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>

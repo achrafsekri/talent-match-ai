@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -11,7 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CalendarEvents } from "@/components/calendar/calendar-events";
 import { DashboardHeader } from "@/components/dashboard/header";
+import { RecentApplications } from "@/components/dashboard/recent-applications";
 import { JobPostTrendChart } from "@/components/dashboard/stats/candidate-trend-chart";
 import { SkillDistributionChart } from "@/components/dashboard/stats/match-status-chart";
 import { StatsOverview } from "@/components/dashboard/stats/overview";
@@ -190,6 +193,25 @@ const Page = async () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Suspense
+          fallback={
+            <div className="col-span-2 h-[450px] rounded-md border border-dashed" />
+          }
+        >
+          <RecentApplications className="col-span-2" />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="h-[450px] rounded-md border border-dashed" />
+          }
+        >
+          <div className="flex flex-col space-y-4">
+            <CalendarEvents userId={user?.id || ""} maxEvents={5} />
+          </div>
+        </Suspense>
       </div>
     </div>
   );

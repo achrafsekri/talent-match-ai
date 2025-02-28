@@ -40,6 +40,12 @@ export async function PATCH(
           id: matchId,
           post: {
             organizationId: user.organizationId!,
+            archivedAt: null,
+            deletedAt: null,
+          },
+          candidate: {
+            archivedAt: null,
+            deletedAt: null,
           },
         },
         data: {

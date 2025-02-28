@@ -10,6 +10,7 @@ interface MatchColumnProps {
   provided: DroppableProvided;
   selectedMatches: Set<string>;
   onMatchSelect: (matchId: string, selected: boolean) => void;
+  totalCount?: number; // Total count before filtering
 }
 
 export function MatchColumn({
@@ -18,14 +19,20 @@ export function MatchColumn({
   provided,
   selectedMatches,
   onMatchSelect,
+  totalCount,
 }: MatchColumnProps) {
+  const isFiltered = totalCount !== undefined && totalCount !== matches.length;
+  
   return (
-    <Card className="h-fit min-h-[600px] w-[320px] shrink-0">
+    <Card className="h-full w-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-sm font-medium">
           {title}
           <span className="rounded-full bg-secondary px-2 py-1 text-xs">
             {matches.length}
+            {isFiltered && (
+              <span className="text-muted-foreground"> / {totalCount}</span>
+            )}
           </span>
         </CardTitle>
       </CardHeader>
@@ -33,17 +40,23 @@ export function MatchColumn({
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="min-h-[500px] space-y-2"
+          className="min-h-[300px] space-y-2"
         >
-          {matches.map((match, index) => (
-            <MatchCard
-              key={match.id}
-              match={match}
-              index={index}
-              selected={selectedMatches.has(match.id)}
-              onSelect={onMatchSelect}
-            />
-          ))}
+          {matches.length > 0 ? (
+            matches.map((match, index) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                index={index}
+                selected={selectedMatches.has(match.id)}
+                onSelect={onMatchSelect}
+              />
+            ))
+          ) : (
+            <div className="flex h-[300px] items-center justify-center rounded-md border border-dashed p-4 text-center text-sm text-muted-foreground">
+              {isFiltered ? "No matches match the current filters" : "No matches in this column"}
+            </div>
+          )}
           {provided.placeholder}
         </div>
       </CardContent>

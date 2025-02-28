@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Plus, ExternalLink, Check, X } from "lucide-react";
+import { Loader2, Plus, Check, X } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   getJobWebsiteIntegrations,
   initiateOAuthFlow
 } from "@/actions/job-website-integrations.server";
+import { LinkedInOrganizationSelector } from "@/components/settings/linkedin-organization-selector";
 
 // Define the provider information
 const PROVIDERS = {
@@ -55,6 +56,7 @@ type IntegrationData = {
   provider: string;
   isActive: boolean;
   createdAt: Date;
+  metadata?: any;
 };
 
 interface JobWebsiteIntegrationsSectionProps {
@@ -64,7 +66,6 @@ interface JobWebsiteIntegrationsSectionProps {
 export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteIntegrationsSectionProps) {
   const [integrations, setIntegrations] = useState<IntegrationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -175,7 +176,6 @@ export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteInte
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-medium">Job Website Integrations</h3>
           <p className="text-sm text-muted-foreground">
             Connect to popular job websites to post your jobs directly from the platform.
           </p>
@@ -191,7 +191,7 @@ export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteInte
             <DialogHeader>
               <DialogTitle>Connect to Job Website</DialogTitle>
               <DialogDescription>
-                Select a job website to connect with. You'll be redirected to authenticate with the selected platform.
+                Select a job website to connect with. You&apos;ll be redirected to authenticate with the selected platform.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
@@ -230,7 +230,8 @@ export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteInte
                         </div>
                       </CardHeader>
                       <CardContent className="p-4 pt-0">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">{info.description}</p>
+                        <p className="text-xs text-muted-foreground mt-2">
                           {isConnected ? "Already connected" : "Click to connect"}
                         </p>
                       </CardContent>
@@ -259,6 +260,9 @@ export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteInte
         ) : (
           integrations.map((integration) => {
             const provider = PROVIDERS[integration.provider];
+            const isLinkedIn = integration.provider === "LINKEDIN";
+            const metadata = integration.metadata as { linkedInOrgId?: string; linkedInOrgName?: string } | undefined;
+            
             return (
               <Card key={integration.id}>
                 <CardHeader>
@@ -303,6 +307,17 @@ export function JobWebsiteIntegrationsSection({ organizationId }: JobWebsiteInte
                   <p className="text-xs text-muted-foreground mt-2">
                     Connected on {new Date(integration.createdAt).toLocaleDateString()}
                   </p>
+                  
+                  {isLinkedIn && integration.isActive && (
+                    <div className="mt-4 pt-4 border-t">
+                      <LinkedInOrganizationSelector 
+                        integrationId={integration.id}
+                        selectedOrgId={metadata?.linkedInOrgId}
+                        selectedOrgName={metadata?.linkedInOrgName}
+                        onOrganizationLinked={loadIntegrations}
+                      />
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter>
                   <div className="flex items-center text-sm">
