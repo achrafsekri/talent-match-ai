@@ -348,11 +348,88 @@ export function MatchStudioBoard({ postId, jobTitle }: MatchStudioBoardProps) {
       toast.error("Please select at least one candidate");
       return;
     }
+    
+    // Check if any selected matches are not in NEW status
+    const nonNewMatches = filteredMatches?.filter(
+      m => selectedMatchIds.has(m.id) && m.status !== "NEW"
+    );
+    
+    if (nonNewMatches && nonNewMatches.length > 0) {
+      toast.warning(`${nonNewMatches.length} selected candidate(s) are already in progress. Only candidates in the 'New Matches' column will receive initial contact emails.`);
+    }
+    
+    // Only schedule interviews for NEW status matches
+    const newMatchIds = filteredMatches
+      ?.filter(m => m.status === "NEW" && selectedMatchIds.has(m.id))
+      .map(m => m.id) || [];
+      
+    if (newMatchIds.length === 0) {
+      toast.error("Please select at least one candidate from the 'New Matches' column");
+      return;
+    }
+    
     // Convert selected matches to array and set for interview scheduling
-    const selectedIds = Array.from(selectedMatchIds);
-    setSelectedForInterview(selectedIds);
+    setSelectedForInterview(newMatchIds);
     setIsSchedulerOpen(true);
-  }, [selectedMatchIds]);
+  }, [selectedMatchIds, filteredMatches]);
+  
+  const handleBulkSendEmails = useCallback(async (values: InterviewFormValues) => {
+    setIsSending(true);
+    
+    // Show loading toast
+    const loadingToast = toast.loading(`Sending emails to ${selectedForInterview.length} candidates...`);
+    
+    try {
+      // Generate Google Meet link if online interview
+      let meetLink;
+      if (values.type === "ONLINE") {
+        const response = await fetch("/api/meetings/create", {
+          method: "POST",
+          body: JSON.stringify({
+            date: values.date,
+            time: values.time,
+          }),
+        });
+        const data = await response.json();
+        meetLink = data.meetLink;
+      }
+
+      // Send emails to all selected candidates
+      const response = await sendMatchEmails({
+        matchIds: selectedForInterview,
+        postId,
+        interviewDetails: {
+          ...values,
+          meetLink,
+        },
+      });
+
+      if (response.success) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success(`Successfully sent emails to ${selectedForInterview.length} candidates`);
+        
+        // Clear selections
+        setSelectedMatchIds(new Set());
+        setSelectedForInterview([]);
+        setIsSchedulerOpen(false);
+        
+        // Refresh matches
+        await fetchMatches();
+      } else {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Failed to send emails:", error);
+      // Dismiss loading toast and show error
+      toast.dismiss(loadingToast);
+      toast.error("Failed to send emails. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
+  }, [selectedForInterview, postId, fetchMatches]);
   
   // Handle filter changes
   const handleFilterChange = useCallback((newFilters: MatchFiltersType) => {
@@ -364,11 +441,11 @@ export function MatchStudioBoard({ postId, jobTitle }: MatchStudioBoardProps) {
     setFilters(DEFAULT_FILTERS);
   }, []);
 
-  const selectedNewMatches = filteredMatches?.filter(
-    (m) => m.status === "NEW" && selectedMatchIds.has(m.id),
+  const selectedMatches = filteredMatches?.filter(
+    (m) => selectedMatchIds.has(m.id),
   );
 
-  const selectedMatches = (filteredMatches as MatchWithCandidate[] | undefined)?.filter(
+  const selectedMatchesForInterview = (filteredMatches as MatchWithCandidate[] | undefined)?.filter(
     (m) => selectedForInterview.includes(m.id)
   ) ?? [];
   
@@ -430,7 +507,7 @@ export function MatchStudioBoard({ postId, jobTitle }: MatchStudioBoardProps) {
                 onClearFilters={handleClearFilters}
               />
               <JobCandidateUpload jobPostId={postId} onUploadComplete={fetchMatches} />
-              {selectedNewMatches && selectedNewMatches.length > 0 && (
+              {selectedMatches && selectedMatches.length > 0 ? (
                 <Button
                   size="sm"
                   className="gap-2"
@@ -445,10 +522,14 @@ export function MatchStudioBoard({ postId, jobTitle }: MatchStudioBoardProps) {
                   ) : (
                     <>
                       <Mail className="size-4" />
-                      Send Emails ({selectedNewMatches.length})
+                      Send Emails ({selectedMatches.length})
                     </>
                   )}
                 </Button>
+              ) : (
+                <div className="text-sm text-muted-foreground italic">
+                  Select candidates using checkboxes to send emails
+                </div>
               )}
             </div>
           </div>
@@ -478,12 +559,14 @@ export function MatchStudioBoard({ postId, jobTitle }: MatchStudioBoardProps) {
         </div>
       </DragDropContext>
 
-      {isSchedulerOpen && selectedMatches.length > 0 && (
+      {isSchedulerOpen && selectedMatchesForInterview.length > 0 && (
         <InterviewSchedulerModal
           isOpen={isSchedulerOpen}
           onClose={() => setIsSchedulerOpen(false)}
-          matches={selectedMatches}
+          matches={selectedMatchesForInterview}
           onSchedule={handleScheduleInterview}
+          onBulkSchedule={handleBulkSendEmails}
+          isSending={isSending}
         />
       )}
 

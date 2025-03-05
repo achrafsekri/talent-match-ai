@@ -6,11 +6,17 @@ import { Draggable } from "@hello-pangea/dnd";
 import { GripVertical, Percent } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { ItemActionsMenu } from "@/components/ui/item-actions-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { MatchDetailsModal } from "./match-details-modal";
-import { ItemActionsMenu } from "@/components/ui/item-actions-menu";
 
 interface MatchCardProps {
   match: MatchWithCandidate;
@@ -26,7 +32,7 @@ export function MatchCard({
   onSelect,
 }: MatchCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Function to get score color class
   const getScoreColorClass = (score: number) => {
     if (score >= 80) return "text-green-600 bg-green-50 ring-green-200";
@@ -52,22 +58,56 @@ export function MatchCard({
                   : "border-l-4 border-l-transparent",
               "hover:shadow-sm hover:ring-accent/20",
               snapshot.isDragging && "scale-[1.02] shadow-lg ring-accent/30",
-              "w-full"
+              selected && "bg-primary/5 ring-2 ring-primary/40",
+              "w-full",
             )}
             onClick={() => setIsModalOpen(true)}
           >
-            <div 
-              className="absolute right-2 top-2 z-10" 
+            {/* Selection checkbox - positioned in top-right corner */}
+            <div
+              className="absolute right-2 top-2 z-20"
               onClick={(e) => e.stopPropagation()}
             >
-              <ItemActionsMenu
-                id={match.candidate.id}
-                type="candidate"
-                isArchived={'archivedAt' in match.candidate ? match.candidate.archivedAt !== null : false}
-              />
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(match.id, !selected);
+                }}
+                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-2 border-primary/50 bg-white shadow-sm transition-colors hover:bg-accent/20"
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "flex h-full w-full items-center justify-center",
+                          selected && "bg-primary/10",
+                        )}
+                      >
+                        <Checkbox
+                          checked={selected}
+                          onCheckedChange={(checked) =>
+                            onSelect(match.id, checked as boolean)
+                          }
+                          className="size-5 border-2 border-primary"
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {selected
+                          ? "Deselect candidate"
+                          : "Select candidate for email"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
-            
-            <CardContent className="flex flex-col gap-3 p-3 sm:p-4">
+
+            {/* Actions menu - moved to top-left */}
+
+            <CardContent className="mt-6 flex flex-col gap-3 p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div
                   {...provided.dragHandleProps}
@@ -76,22 +116,6 @@ export function MatchCard({
                 >
                   <GripVertical className="size-4 sm:size-5" />
                 </div>
-                {match.status === "NEW" && (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelect(match.id, !selected);
-                    }}
-                  >
-                    <Checkbox
-                      checked={selected}
-                      onCheckedChange={(checked) =>
-                        onSelect(match.id, checked as boolean)
-                      }
-                      className="size-4"
-                    />
-                  </div>
-                )}
               </div>
 
               <div className="space-y-4">
@@ -104,7 +128,7 @@ export function MatchCard({
                       <span
                         className={cn(
                           "inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1",
-                          getScoreColorClass(match.score)
+                          getScoreColorClass(match.score),
                         )}
                       >
                         <Percent className="mr-1 size-3" />
@@ -131,14 +155,26 @@ export function MatchCard({
                     )}
                   </div>
                 )}
-                
+
+                {/* Selection indicator */}
+                {selected && (
+                  <div className="flex items-center justify-center">
+                    <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                      Selected for email
+                    </span>
+                  </div>
+                )}
+
                 {/* Match score progress bar */}
-                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div 
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div
                     className={cn(
                       "h-full rounded-full",
-                      match.score >= 80 ? "bg-green-500" : 
-                      match.score >= 60 ? "bg-yellow-500" : "bg-gray-400"
+                      match.score >= 80
+                        ? "bg-green-500"
+                        : match.score >= 60
+                          ? "bg-yellow-500"
+                          : "bg-gray-400",
                     )}
                     style={{ width: `${match.score}%` }}
                   />
