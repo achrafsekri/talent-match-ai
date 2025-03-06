@@ -7,7 +7,7 @@ import { DashboardHeader } from "@/components/dashboard/header";
 import { BillingInfo } from "@/components/pricing/billing-info";
 
 export const metadata = constructMetadata({
-  title: "Billing – Entretien AI",
+  title: "Billing – CruxHire AI",
   description: "Manage billing and your subscription plan.",
 });
 

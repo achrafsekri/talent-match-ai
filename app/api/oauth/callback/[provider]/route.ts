@@ -1,36 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { JobWebsiteProvider } from "@prisma/client";
+import { connectJobWebsite } from "@/actions/job-website-integrations.server";
 
 import { prisma } from "@/lib/db";
-import { connectJobWebsite } from "@/actions/job-website-integrations.server";
 
 // OAuth configuration for each provider
 const OAUTH_CONFIG = {
-  "linkedin": {
+  linkedin: {
     tokenUrl: "https://www.linkedin.com/oauth/v2/accessToken",
     clientId: process.env.LINKEDIN_CLIENT_ID || "",
     clientSecret: process.env.LINKEDIN_CLIENT_SECRET || "",
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/linkedin`,
   },
-  "indeed": {
+  indeed: {
     tokenUrl: "https://secure.indeed.com/oauth/v2/tokens",
     clientId: process.env.INDEED_CLIENT_ID || "",
     clientSecret: process.env.INDEED_CLIENT_SECRET || "",
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/indeed`,
   },
-  "glassdoor": {
+  glassdoor: {
     tokenUrl: "https://www.glassdoor.com/oauth/token",
     clientId: process.env.GLASSDOOR_CLIENT_ID || "",
     clientSecret: process.env.GLASSDOOR_CLIENT_SECRET || "",
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/glassdoor`,
   },
-  "monster": {
+  monster: {
     tokenUrl: "https://auth.monster.com/oauth/token",
     clientId: process.env.MONSTER_CLIENT_ID || "",
     clientSecret: process.env.MONSTER_CLIENT_SECRET || "",
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/monster`,
   },
-  "ziprecruiter": {
+  ziprecruiter: {
     tokenUrl: "https://api.ziprecruiter.com/oauth/token",
     clientId: process.env.ZIPRECRUITER_CLIENT_ID || "",
     clientSecret: process.env.ZIPRECRUITER_CLIENT_SECRET || "",
@@ -40,9 +39,9 @@ const OAUTH_CONFIG = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { provider: string } }
+  { params }: { params: Promise<{ provider: string }> },
 ) {
-  const { provider } = params;
+  const { provider } = await params;
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const state = searchParams.get("state");
@@ -52,7 +51,7 @@ export async function GET(
   if (error) {
     console.error(`OAuth error from ${provider}:`, error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=oauth_error&provider=${provider}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=oauth_error&provider=${provider}`,
     );
   }
 
@@ -60,7 +59,7 @@ export async function GET(
   if (!code || !state) {
     console.error(`Missing required parameters for ${provider} OAuth callback`);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=missing_params&provider=${provider}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=missing_params&provider=${provider}`,
     );
   }
 
@@ -71,19 +70,22 @@ export async function GET(
     });
 
     if (!oauthState || new Date() > oauthState.expiresAt) {
-      console.error(`Invalid or expired state parameter for ${provider} OAuth callback`);
+      console.error(
+        `Invalid or expired state parameter for ${provider} OAuth callback`,
+      );
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=invalid_state&provider=${provider}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=invalid_state&provider=${provider}`,
       );
     }
 
     // Get the OAuth configuration for the provider
-    const config = OAUTH_CONFIG[provider.toLowerCase() as keyof typeof OAUTH_CONFIG];
-    
+    const config =
+      OAUTH_CONFIG[provider.toLowerCase() as keyof typeof OAUTH_CONFIG];
+
     if (!config) {
       console.error(`OAuth configuration not found for provider: ${provider}`);
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=invalid_provider&provider=${provider}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=invalid_provider&provider=${provider}`,
       );
     }
 
@@ -104,9 +106,12 @@ export async function GET(
 
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.text();
-      console.error(`Error exchanging code for token with ${provider}:`, errorData);
+      console.error(
+        `Error exchanging code for token with ${provider}:`,
+        errorData,
+      );
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=token_exchange&provider=${provider}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=token_exchange&provider=${provider}`,
       );
     }
 
@@ -133,18 +138,18 @@ export async function GET(
     if (result.success) {
       // Redirect to settings page with success message
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?success=true&provider=${provider}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/settings?success=true&provider=${provider}`,
       );
     } else {
       console.error(`Error connecting job website ${provider}:`, result.error);
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=connection_failed&provider=${provider}`
+        `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=connection_failed&provider=${provider}`,
       );
     }
   } catch (error) {
     console.error(`Error processing ${provider} OAuth callback:`, error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=server_error&provider=${provider}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/settings?error=server_error&provider=${provider}`,
     );
   }
-} 
+}

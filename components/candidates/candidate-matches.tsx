@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { submitFeedback as submitFeedbackAction } from "@/actions/matches";
-import type { JobPost, Match, MatchNote, MatchStatus } from "@prisma/client";
+import type { JobPost, Match as PrismaMatch, MatchNote, MatchStatus } from "@prisma/client";
 import {
   AlertCircle,
   ArrowRight,
@@ -12,24 +11,33 @@ import {
   Calendar,
   Video,
   MapPin,
+  Link as LinkIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
-import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface InterviewDetails {
+  type: "ONLINE" | "IN_PERSON";
+  date: string;
+  time: string;
+  location?: string;
+  meetLink?: string;
+}
+
+type Match = PrismaMatch & {
+  post: Pick<JobPost, "id" | "title" | "description" | "status">;
+  notes: MatchNote[];
+  interviewDetails?: InterviewDetails;
+}
+
 interface CandidateMatchesProps {
-  matches: Array<
-    Match & {
-      post: Pick<JobPost, "id" | "title" | "description" | "status">;
-      notes: MatchNote[];
-    }
-  >;
+  matches: Match[];
 }
 
 interface LoadingState {
@@ -82,25 +90,25 @@ function MatchMeetingDetails({ match }: { match: Match }) {
   return (
     <div className="mt-4 rounded-md bg-muted p-4">
       <h4 className="flex items-center gap-2 text-sm font-medium">
-        <Calendar className="h-4 w-4" />
+        <Calendar className="size-4" />
         Interview Details
       </h4>
       <div className="mt-2 space-y-2 text-sm">
         <div className="flex items-center gap-2">
           {type === "ONLINE" ? (
-            <Video className="h-4 w-4 text-muted-foreground" />
+            <Video className="size-4 text-muted-foreground" />
           ) : (
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <MapPin className="size-4 text-muted-foreground" />
           )}
           <span>{type === "ONLINE" ? "Online Meeting" : "In-Person Interview"}</span>
         </div>
         <p className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <Calendar className="size-4 text-muted-foreground" />
           {format(new Date(date), "PPP")} at {time}
         </p>
         {location && (
           <p className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <MapPin className="size-4 text-muted-foreground" />
             {location}
           </p>
         )}
@@ -108,15 +116,14 @@ function MatchMeetingDetails({ match }: { match: Match }) {
           <Button
             variant="link"
             className="h-auto p-0"
-            asChild
           >
-            <a 
-              href={meetLink} 
-              target="_blank" 
+            <a
+              href={meetLink}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"
             >
-              <LinkIcon className="h-4 w-4" />
+              <LinkIcon className="size-4" />
               Join Meeting
             </a>
           </Button>
@@ -135,7 +142,7 @@ export function CandidateMatches({ matches }: CandidateMatchesProps) {
   if (!matches.length) {
     return (
       <Alert variant="default">
-        <AlertCircle className="h-5 w-5" />
+        <AlertCircle className="size-5" />
         <AlertDescription>
           No matches found for this candidate yet. The matching process will run
           automatically for new job posts.
@@ -192,7 +199,7 @@ export function CandidateMatches({ matches }: CandidateMatchesProps) {
                 >
                   <ThumbsUp
                     className={cn(
-                      "h-4 w-4",
+                      "size-4",
                       isMatchLoading(match.id) && "animate-pulse",
                     )}
                   />
@@ -211,7 +218,7 @@ export function CandidateMatches({ matches }: CandidateMatchesProps) {
                 >
                   <ThumbsDown
                     className={cn(
-                      "h-4 w-4",
+                      "size-4",
                       isMatchLoading(match.id) && "animate-pulse",
                     )}
                   />
@@ -219,7 +226,7 @@ export function CandidateMatches({ matches }: CandidateMatchesProps) {
               </form>
               <Link href={`/posts/${match.post.id}`} passHref>
                 <Button variant="ghost" size="sm">
-                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <ExternalLink className="mr-2 size-4" />
                   View Post
                 </Button>
               </Link>
@@ -249,7 +256,7 @@ export function CandidateMatches({ matches }: CandidateMatchesProps) {
               {match.notes.length > 0 && (
                 <div className="rounded-md bg-muted p-4">
                   <h4 className="flex items-center gap-2 text-sm font-medium">
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="size-4" />
                     Notes
                   </h4>
                   {match.notes.map((note) => (

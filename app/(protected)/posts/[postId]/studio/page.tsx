@@ -5,9 +5,9 @@ import { getCurrentUser } from "@/lib/session";
 import { MatchStudioBoard } from "@/components/studio/match-studio-board";
 
 interface MatchStudioPageProps {
-  params: {
+  params: Promise<{
     postId: string;
-  };
+  }>;
 }
 
 export default async function MatchStudioPage({

@@ -5,9 +5,9 @@ import { getCurrentUser } from "@/lib/session";
 import { JobPostDetails } from "@/components/posts/job-post-details";
 
 interface JobPostPageProps {
-  params: {
+  params: Promise<{
     postId: string;
-  };
+  }>;
 }
 
 export default async function JobPostPage({ params }: JobPostPageProps) {

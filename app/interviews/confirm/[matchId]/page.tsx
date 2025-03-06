@@ -3,16 +3,18 @@ import { prisma } from "@/lib/db";
 import { InterviewConfirmationForm } from "./interview-confirmation-form";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     matchId: string;
-  };
+  }>;
 }
 
 export default async function InterviewConfirmationPage({
   params,
 }: PageProps) {
+  const { matchId } = await params;
+
   const match = await prisma.match.findUnique({
-    where: { id: params.matchId },
+    where: { id: matchId },
     select: {
       id: true,
       interviewDetails: true,

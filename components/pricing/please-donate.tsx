@@ -40,7 +40,7 @@ export function PleaseDonate() {
           </h1>
 
           <p className="mt-6 animate-fade-up text-balance text-xl text-muted-foreground opacity-0 [animation-delay:300ms]">
-            Entretien AI is completely free and open source. We believe everyone
+            CruxHire AI is completely free and open source. We believe everyone
             deserves access to quality interview preparation tools.
           </p>
         </div>

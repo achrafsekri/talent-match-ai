@@ -10,8 +10,8 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import { Match } from "@prisma/client";
 import { format } from "date-fns";
+import type { Match } from "@/types";
 
 interface InterviewDetails {
   type: "ONLINE" | "IN_PERSON";
@@ -55,14 +55,14 @@ export function InterviewInvitationEmail({
             <Text style={text}>Dear {match.candidate.name},</Text>
 
             <Text style={text}>
-              Thank you for your interest in the <strong>{jobTitle}</strong> position at {companyName}. 
+              Thank you for your interest in the <strong>{jobTitle}</strong> position at {companyName}.
               We were impressed by your profile and would like to invite you for an interview.
             </Text>
 
             {/* Interview Details Card */}
             <Section style={detailsCard}>
               <Text style={detailsTitle}>Interview Details</Text>
-              
+
               <div style={detailsGrid}>
                 <div style={detailsRow}>
                   <Text style={detailsLabel}>Type:</Text>
@@ -101,7 +101,7 @@ export function InterviewInvitationEmail({
 
             <Text style={text}>
               Please confirm your attendance by clicking the button below or replying to this email.
-              If you need to reschedule or have any questions, please don't hesitate to contact us.
+              If you need to reschedule or have any questions, please don&apos;t hesitate to contact us.
             </Text>
 
             <Button

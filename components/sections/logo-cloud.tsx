@@ -1,12 +1,11 @@
 import {
-  Bot,
-  Boxes,
-  Building2,
-  Compass,
-  Diamond,
-  Fingerprint,
-  Rocket,
-  Waves,
+    Bot,
+    Boxes,
+    Building2,
+    Compass,
+    Diamond,
+    Fingerprint,
+    Rocket
 } from "lucide-react";
 
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
@@ -83,7 +82,7 @@ export default function LogoCloud() {
 
       <MaxWidthWrapper>
         <h2 className="text-center text-lg font-medium text-muted-foreground">
-          Popular brands use Entretien AI
+          Popular brands use CruxHire AI
         </h2>
 
         <div className="relative mt-12 grid grid-cols-2 items-center gap-8 md:grid-cols-3 lg:grid-cols-4">

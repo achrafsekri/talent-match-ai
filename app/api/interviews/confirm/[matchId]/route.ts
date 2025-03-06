@@ -3,10 +3,11 @@ import { prisma } from "@/lib/db";
 
 export async function POST(
   request: Request,
-  { params }: { params: { matchId: string } }
+  { params }: { params: Promise<{ matchId: string }> }
 ) {
   try {
-    const { matchId } = params;
+    const resolvedParams = await params;
+    const { matchId } = resolvedParams;
 
     // Update match status to INTERVIEWING when candidate confirms
     const updatedMatch = await prisma.match.update({

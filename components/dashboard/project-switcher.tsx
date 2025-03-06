@@ -8,7 +8,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Popover,
@@ -45,10 +45,6 @@ export default function ProjectSwitcher({
       >
         {currentOrganization ? (
           <Avatar className="size-10 shrink-0 rounded-lg border">
-            <AvatarImage
-              src={currentOrganization.photo || undefined}
-              alt={currentOrganization.name}
-            />
             <AvatarFallback
               style={{
                 backgroundColor:
@@ -126,7 +122,6 @@ function ProjectList({
           onClick={() => handleSwitchProject(org.id)}
         >
           <Avatar className="size-7 shrink-0 rounded-lg border">
-            <AvatarImage src={org.photo || undefined} alt={org.name} />
             <AvatarFallback
               style={{
                 backgroundColor: org.color ?? "rgb(203 213 225)",
@@ -138,19 +133,13 @@ function ProjectList({
           <div className="flex flex-1 items-center justify-between gap-2">
             <div className="flex flex-col">
               <span
-                className={`truncate text-sm ${
-                  selected?.id === org.id
-                    ? "font-medium text-foreground"
-                    : "font-normal"
-                }`}
+                className={`truncate text-sm ${selected?.id === org.id
+                  ? "font-medium text-foreground"
+                  : "font-normal"
+                  }`}
               >
                 {org.name}
               </span>
-              {org.email && (
-                <span className="truncate text-xs text-muted-foreground">
-                  {org.email}
-                </span>
-              )}
             </div>
             {selected?.id === org.id && (
               <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-foreground">

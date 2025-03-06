@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/layout/mode-toggle";
 
 import { Icons } from "../shared/icons";
-import { ProductHuntBadge } from "../shared/product-hunt-badge";
 
 export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
     <footer className={cn("border-t bg-background", className)}>
       <div className="mx-auto w-full max-w-7xl px-4 py-16">
         <div className="flex flex-col items-center gap-16">
-          <ProductHuntBadge />
+          {/* <ProductHuntBadge /> */}
 
           {/* Newsletter Section - Centered */}
           {/* <div className="w-full max-w-lg space-y-4 text-center">
@@ -45,7 +44,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
                   const Icon = Icons[platform as keyof typeof Icons];
                   return (
                     <Link
-                      href={url}
+                      href={url as string}
                       key={platform}
                       target="_blank"
                       rel="noopener noreferrer"

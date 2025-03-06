@@ -2,7 +2,7 @@ export function WebsiteJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Entretien AI',
+    name: 'CruxHire AI',
     description: 'AI-powered interview preparation platform',
     url: 'https://entretien-ai.com',
     potentialAction: {

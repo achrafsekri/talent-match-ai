@@ -8,7 +8,7 @@ interface MarketingLayoutProps {
 }
 
 export const metadata = constructMetadata({
-  title: "Entretien AI - Land Your Dream Job With Our Interview Practice",
+  title: "CruxHire AI - Land Your Dream Job With Our Interview Practice",
 } );
 
 export default function MarketingLayout({ children }: MarketingLayoutProps) {

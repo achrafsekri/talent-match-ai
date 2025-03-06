@@ -113,21 +113,25 @@ model Session {
 }
 
 model User {
-  id             String        @id @default(cuid())
-  name           String?
-  email          String?       @unique
-  password       String?
-  emailVerified  DateTime?
-  image          String?
-  role           UserRole      @default(USER)
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @default(now()) @map("updated_at")
-  accounts       Account[]
-  sessions       Session[]
-  jobPosts       JobPost[]
-  oauthStates    OAuthState[]
+  id                     String        @id @default(cuid())
+  name                   String?
+  email                  String?       @unique
+  password               String?
+  emailVerified          DateTime?
+  image                  String?
+  role                   UserRole      @default(USER)
+  organizationId         String?
+  organization           Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  stripeCustomerId       String?       @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?       @unique @map("stripe_subscription_id")
+  stripePriceId          String?       @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime?     @map("stripe_current_period_end")
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @default(now()) @map("updated_at")
+  accounts               Account[]
+  sessions               Session[]
+  jobPosts               JobPost[]
+  oauthStates            OAuthState[]
 
   @@index([organizationId])
   @@map("users")
@@ -396,7 +400,7 @@ model JobWebsiteIntegration {
   refreshToken   String?
   tokenExpiry    DateTime?
   isActive       Boolean             @default(true)
-  metadata       Json?               // Added metadata field to store additional information
+  metadata       Json? // Added metadata field to store additional information
   organizationId String
   organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime            @default(now())
@@ -424,15 +428,15 @@ model JobWebsitePosting {
 }
 
 model OAuthState {
-  id             String              @id @default(cuid())
-  state          String              @unique
+  id             String             @id @default(cuid())
+  state          String             @unique
   provider       JobWebsiteProvider
   userId         String
   organizationId String
   expiresAt      DateTime
-  createdAt      DateTime            @default(now())
-  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime           @default(now())
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([state])
   @@map("oauth_states")

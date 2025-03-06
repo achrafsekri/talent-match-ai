@@ -4,9 +4,9 @@ import { env } from "@/env.mjs";
 const site_url = env.NEXT_PUBLIC_APP_URL;
 
 export const siteConfig: SiteConfig = {
-  name: "TalentMatch AI",
+  name: "CruxHire AI",
   description:
-    "TalentMatch AI is a cutting-edge platform designed to streamline the recruitment process. It leverages advanced AI algorithms to rank and screen resumes, ensuring that recruiters can quickly identify the best candidates for their job openings. The platform provides detailed insights and analytics, making the hiring process more efficient and effective.",
+    "CruxHire AI is a cutting-edge platform designed to streamline the recruitment process. It leverages advanced AI algorithms to rank and screen resumes, ensuring that recruiters can quickly identify the best candidates for their job openings. The platform provides detailed insights and analytics, making the hiring process more efficient and effective.",
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {

@@ -17,8 +17,8 @@ interface CandidateMeetingsProps {
   }>;
 }
 
-export function CandidateMeetings({ 
-  candidateId, 
+export function CandidateMeetings({
+  candidateId,
   candidateName,
   candidateEmail,
   matches = []
@@ -60,23 +60,23 @@ export function CandidateMeetings({
                     </h4>
                     <Badge variant={details.type === "ONLINE" ? "default" : "secondary"}>
                       {details.type === "ONLINE" ? (
-                        <Video className="mr-1 h-3 w-3" />
+                        <Video className="mr-1 size-3" />
                       ) : (
-                        <MapPin className="mr-1 h-3 w-3" />
+                        <MapPin className="mr-1 size-3" />
                       )}
                       {details.type}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="size-4" />
                       <span>{format(new Date(details.date), "PPP")}</span>
                     </div>
                     <span>{details.time}</span>
                   </div>
                   {details.location && (
                     <p className="flex items-center gap-1 text-sm">
-                      <MapPin className="h-4 w-4" />
+                      <MapPin className="size-4" />
                       {details.location}
                     </p>
                   )}
@@ -84,15 +84,14 @@ export function CandidateMeetings({
                     <Button
                       variant="link"
                       className="h-auto p-0 text-sm"
-                      asChild
                     >
-                      <a 
-                        href={details.meetLink} 
-                        target="_blank" 
+                      <a
+                        href={details.meetLink}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-1"
                       >
-                        <LinkIcon className="h-4 w-4" />
+                        <LinkIcon className="size-4" />
                         Join Meeting
                       </a>
                     </Button>

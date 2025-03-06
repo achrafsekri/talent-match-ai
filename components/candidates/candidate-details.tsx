@@ -5,8 +5,16 @@ import { CandidateInfo } from "@/components/candidates/candidate-info";
 import { CandidateResume } from "@/components/candidates/candidate-resume";
 import { CandidateMatches } from "@/components/candidates/candidate-matches";
 import { CandidateMeetings } from "@/components/candidates/candidate-meetings";
-import type { Achievement, Candidate, CandidateSkill, Education, Match, MatchNote, WorkExperience, Meeting } from "@prisma/client";
+import type { Achievement, Candidate, CandidateSkill, Education, Match, MatchNote, WorkExperience } from "@prisma/client";
 import type { JobPost } from "@prisma/client";
+
+interface InterviewDetails {
+  type: "ONLINE" | "IN_PERSON";
+  date: string;
+  time: string;
+  location?: string;
+  meetLink?: string;
+}
 
 interface CandidateDetailsProps {
   candidate: Candidate & {
@@ -17,6 +25,7 @@ interface CandidateDetailsProps {
     matches: Array<Match & {
       post: Pick<JobPost, "id" | "title" | "description" | "status">;
       notes: MatchNote[];
+      interviewDetails?: InterviewDetails;
     }>;
   };
 }
@@ -66,11 +75,11 @@ export function CandidateDetails({ candidate }: CandidateDetailsProps) {
         <TabsTrigger value="matches">Matches</TabsTrigger>
         <TabsTrigger value="meetings">Meetings</TabsTrigger>
       </TabsList>
-      
+
       <TabsContent value="info">
         <CandidateInfo candidate={candidate} />
       </TabsContent>
-      
+
       <TabsContent value="resume">
         <CandidateResume
           cvUrl={candidate.cvUrl}
@@ -80,11 +89,11 @@ export function CandidateDetails({ candidate }: CandidateDetailsProps) {
           certifications={certifications}
         />
       </TabsContent>
-      
+
       <TabsContent value="matches">
         <CandidateMatches matches={candidate.matches} />
       </TabsContent>
-      
+
       <TabsContent value="meetings">
         <CandidateMeetings
           candidateId={candidate.id}

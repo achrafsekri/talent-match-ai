@@ -5,7 +5,7 @@ import { MatchStatus } from "@prisma/client";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { matchId: string } }
+  { params }: { params: Promise<{ matchId: string }> }
 ) {
   try {
     const user = await getCurrentUser();
@@ -18,7 +18,8 @@ export async function PATCH(
 
     const body = await request.json();
     const { status } = body;
-    const { matchId } = params;
+    const resolvedParams = await params;
+    const { matchId } = resolvedParams;
 
     console.log("API: Received update request:", { 
       matchId, 

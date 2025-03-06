@@ -12,23 +12,24 @@ import { OAuthCallbackHandler } from "@/components/settings/oauth-callback-handl
 import { Separator } from "@/components/ui/separator";
 
 export const metadata = constructMetadata({
-  title: "Settings – Entretien AI",
+  title: "Settings – CruxHire AI",
   description: "Configure your account and website settings.",
 });
 
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const user = await getCurrentUser();
+  const resolvedSearchParams = await searchParams;
 
   if (!user?.id) redirect("/login");
 
   // Extract OAuth callback parameters
-  const success = searchParams.success;
-  const error = searchParams.error;
-  const provider = searchParams.provider as string | undefined;
+  const success = resolvedSearchParams.success;
+  const error = resolvedSearchParams.error;
+  const provider = resolvedSearchParams.provider as string | undefined;
 
   return (
     <>
@@ -45,7 +46,7 @@ export default async function SettingsPage({
         />
       )}
       <Tabs 
-        defaultValue={searchParams.tab as string || "account"} 
+        defaultValue={resolvedSearchParams.tab as string || "account"} 
         className="w-full"
       >
         <TabsList className="mb-4">
@@ -61,8 +62,8 @@ export default async function SettingsPage({
         </TabsContent>
         <TabsContent value="integrations" className="space-y-8">
           <div>
-            <h3 className="text-lg font-medium mb-1">Job Platforms</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <h3 className="mb-1 text-lg font-medium">Job Platforms</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               Connect to job platforms to post jobs and manage applications.
             </p>
             <JobWebsiteIntegrationsSection organizationId={user.organizationId} />
@@ -71,8 +72,8 @@ export default async function SettingsPage({
           <Separator className="my-6" />
           
           <div>
-            <h3 className="text-lg font-medium mb-1">Calendar Integrations</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <h3 className="mb-1 text-lg font-medium">Calendar Integrations</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               Connect your calendar to schedule interviews and manage appointments.
             </p>
             <CalendarIntegrationsSection organizationId={user.organizationId} />

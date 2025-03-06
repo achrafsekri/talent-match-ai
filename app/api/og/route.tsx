@@ -52,7 +52,7 @@ export async function GET(req: Request) {
               color: "transparent",
             }}
           >
-            Entretien AI
+            CruxHire AI
           </div>
 
           <div tw="flex flex-col flex-1 py-16">

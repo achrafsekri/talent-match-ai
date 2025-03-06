@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { PlanMeetingDialog } from "@/components/candidates/plan-meeting-dialog";
 
 import { getCandidateById } from "@/lib/candidates";
@@ -9,13 +8,11 @@ import { CandidateDetailsSkeleton } from "@/components/candidates/candidate-deta
 import { DashboardHeader } from "@/components/dashboard/header";
 
 interface CandidatePageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>
 }
 
 export default async function CandidatePage({ params }: CandidatePageProps) {
-  const candidate = await getCandidateById(params.id);
+  const candidate = await getCandidateById((await params).id);
 
   if (!candidate) {
     notFound();
@@ -33,8 +30,8 @@ export default async function CandidatePage({ params }: CandidatePageProps) {
           heading={candidate.name}
           text="View and manage candidate details"
         />
-        <PlanMeetingDialog 
-          candidateId={candidate.id} 
+        <PlanMeetingDialog
+          candidateId={candidate.id}
           candidateEmail={candidate.email}
           candidateName={candidate.name}
           jobTitle={jobTitle}
@@ -42,7 +39,7 @@ export default async function CandidatePage({ params }: CandidatePageProps) {
       </div>
 
       <Suspense fallback={<CandidateDetailsSkeleton />}>
-        <CandidateDetails candidate={candidate} />
+        <CandidateDetails candidate={candidate as any} />
       </Suspense>
     </div>
   );

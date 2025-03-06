@@ -6,13 +6,14 @@ import { CandidatesList } from "@/components/candidates/candidates-list";
 import { DashboardHeader } from "@/components/dashboard/header";
 
 interface CandidatesPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function CandidatesPage({
   searchParams,
 }: CandidatesPageProps) {
   const user = await getCurrentUser();
+  const resolvedSearchParams = await searchParams;
 
   return (
     <div className="flex flex-col gap-8">
@@ -29,7 +30,7 @@ export default async function CandidatesPage({
           <CandidateSearch />
           <CandidateFilters />
         </div>
-        <CandidatesList searchParams={searchParams} />
+        <CandidatesList searchParams={resolvedSearchParams} />
       </div>
     </div>
   );
