@@ -2,9 +2,10 @@
 
 import { useContext, useState } from "react";
 import Link from "next/link";
-import { UserSubscriptionPlan } from "@/types";
 
-import { SubscriptionPlan } from "@/types/index";
+// @ts-ignore
+import { UserSubscriptionPlan } from "types/index.d";
+import { SubscriptionPlan } from "types/index.d";
 import { pricingData } from "@/config/subscriptions";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -177,9 +178,9 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
           Email{" "}
           <a
             className="font-medium text-primary hover:underline"
-            href="support@entretien-ai.com"
+            href="support@cruxhire.com"
           >
-            support@entretien-ai.com
+            support@cruxhire.com
           </a>{" "}
           to contact our support team.
           <br />

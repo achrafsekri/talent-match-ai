@@ -2,7 +2,8 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { SidebarNavItem } from "@/types";
+
+import type { SidebarNavItem } from "types/index.d";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

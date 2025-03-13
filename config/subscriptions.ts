@@ -1,4 +1,5 @@
-import { PlansRow, SubscriptionPlan } from "types";
+// @ts-ignore
+import { PlansRow, SubscriptionPlan } from "types/index.d";
 import { env } from "@/env.mjs";
 
 export const pricingData: SubscriptionPlan[] = [

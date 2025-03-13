@@ -76,7 +76,7 @@ const MarqueeLogo = () => {
   return (
     <div className="relative z-50 mt-8 animate-fade-up opacity-0 [animation-delay:2400ms]">
       <h2 className="text-center text-lg font-medium text-neutral-800 dark:text-neutral-200">
-        Trusted by engineers from top companies
+        Trusted by hiring managers from top companies
       </h2>
       <MarqueeDemo />
     </div>

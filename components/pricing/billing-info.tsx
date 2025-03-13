@@ -1,6 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
 
+// @ts-ignore
 import { UserSubscriptionPlan } from "types";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

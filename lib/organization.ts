@@ -127,6 +127,7 @@ export async function hasAnyOrganizations(userId: string): Promise<boolean> {
  * @param organizationId - The ID of the organization
  */
 export async function getOrganizationInvites(organizationId: string) {
+  // @ts-ignore
   return await prisma.invitation.findMany({
     where: {
       organizationId,

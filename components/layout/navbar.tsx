@@ -42,7 +42,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
   return (
     <header
-      className={`sticky top-0 z-[999] flex w-full animate-fade-down justify-center bg-background/60 opacity-0 backdrop-blur-xl transition-all [animation-delay:2200ms] ${
+      className={`sticky top-0 z-[999] mt-4 flex w-full animate-fade-down justify-center bg-background/60 opacity-0 backdrop-blur-xl transition-all [animation-delay:2200ms] ${
         scroll ? (scrolled ? "border-b" : "bg-transparent") : "border-b"
       }`}
     >
@@ -128,9 +128,11 @@ export function NavBar({ scroll = false }: NavBarProps) {
               variant="default"
               size="sm"
               rounded="full"
+              disabled={true}
               onClick={() => setShowSignInModal(true)}
             >
-              <span>Sign In</span>
+              {/* <span>Sign In</span> */}
+              <span>Coming Soon</span>
               <Icons.arrowRight className="size-4" />
             </Button>
           ) : (

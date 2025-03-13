@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import type { SidebarNavItem } from "types/index.d";
 
 import { sidebarLinks } from "@/config/dashboard";
 import { getOrgRole, getUserOrganization } from "@/lib/organization";
 import { getCurrentUser } from "@/lib/session";
+import NoOrgPrompt from "@/components/dashboard/no-org-prompt";
 import { SearchCommand } from "@/components/dashboard/search-command";
 import {
   DashboardSidebar,
@@ -11,7 +13,6 @@ import {
 import { ModeToggle } from "@/components/layout/mode-toggle";
 import { UserAccountNav } from "@/components/layout/user-account-nav";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
-import NoOrgPrompt from "@/components/dashboard/no-org-prompt";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,7 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
   return (
     <div className="relative flex min-h-screen w-full">
       <DashboardSidebar
-        links={filteredLinks}
+        links={filteredLinks as SidebarNavItem[]}
         organizations={organizations}
         currentOrganization={organization}
       />
@@ -47,7 +48,7 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
         <header className="sticky top-0 z-50 flex h-14 bg-background px-4 lg:h-[60px] xl:px-8">
           <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-3 px-0">
             <MobileSheetSidebar
-              links={filteredLinks}
+              links={filteredLinks as SidebarNavItem[]}
               organizations={organizations}
               currentOrganization={organization}
             />

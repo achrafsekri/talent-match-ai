@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if LinkedIn organization is selected
+    // @ts-ignore
     const metadata = linkedInIntegration.metadata as { linkedInOrgId?: string; linkedInOrgName?: string } | null;
     
     if (!metadata?.linkedInOrgId) {

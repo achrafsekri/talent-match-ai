@@ -4,10 +4,10 @@ export function WebsiteJsonLd() {
     '@type': 'WebSite',
     name: 'CruxHire AI',
     description: 'AI-powered interview preparation platform',
-    url: 'https://entretien-ai.com',
+    url: 'https://cruxhire.com',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://entretien-ai.com/search?q={search_term_string}',
+      target: 'https://cruxhire.com/search?q={search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   }

@@ -4,7 +4,13 @@ import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Organization } from "@prisma/client";
-import { Menu, PanelLeftClose, PanelRightClose } from "lucide-react";
+import {
+  LucideIcon,
+  Menu,
+  PanelLeftClose,
+  PanelRightClose,
+} from "lucide-react";
+import type { SidebarNavItem } from "types/index.d";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -296,8 +302,6 @@ export function MobileSheetSidebar({ links }: DashboardSidebarProps) {
                     })}
                   </section>
                 ))}
-
-              
               </nav>
             </div>
           </ScrollArea>

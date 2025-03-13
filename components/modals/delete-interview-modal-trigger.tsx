@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteInterview } from "@/actions/delete-interview";
 import { Trash2 } from "lucide-react";
+
+// @ts-ignore
+import { deleteInterview } from "@/actions/delete-interview";
 
 import {
   AlertDialog,

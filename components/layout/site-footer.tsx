@@ -27,7 +27,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
           </div> */}
 
           {/* Main Footer Content - Two Columns */}
-          <div className="flex w-full max-w-2xl flex-col gap-14 sm:flex-row">
+          <div className="flex w-full flex-col gap-14 sm:flex-row">
             {/* Brand Section */}
             <div className="flex flex-col items-center space-y-4 text-center sm:items-start sm:text-left">
               <Link href="/" className="flex items-center space-x-2">
@@ -39,7 +39,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               <p className="text-sm text-muted-foreground/80">
                 {siteConfig.description}
               </p>
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 {Object.entries(siteConfig.links).map(([platform, url]) => {
                   const Icon = Icons[platform as keyof typeof Icons];
                   return (
@@ -60,7 +60,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
                     </Link>
                   );
                 })}
-              </div>
+              </div> */}
             </div>
 
             {/* Navigation Links Grid */}

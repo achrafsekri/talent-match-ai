@@ -22,17 +22,18 @@ const HeroCTA = () => {
             borderRadius="1rem"
             className="border-neutral-200 bg-white font-medium text-black dark:border-slate-800 dark:bg-slate-950 dark:text-white"
           >
-            Start For Free
+            Go to Dashboard
             <ChevronRight className="size-5" />
           </MovingBorderButton>
         </Link>
       ) : status === "unauthenticated" ? (
         <MovingBorderButton
           borderRadius="1rem"
-          className="border-neutral-200 bg-white font-medium text-black dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+          className="border-neutral-200 bg-white font-medium text-black disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
           onClick={() => setShowSignInModal(true)}
+          disabled={true}
         >
-          Start For Free
+          Coming Soon
           <ChevronRight className="size-5" />
         </MovingBorderButton>
       ) : (

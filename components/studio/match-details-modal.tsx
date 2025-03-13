@@ -48,6 +48,7 @@ export function MatchDetailsModal({
       const response = await sendMatchEmails({
         matchIds: [match.id],
         postId: match.postId,
+        interviewDetails: match.interviewDetails as any,
       });
 
       if (response.success) {

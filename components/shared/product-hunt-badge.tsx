@@ -2,7 +2,7 @@ export const ProductHuntBadge = () => {
   return (
     <div>
       <a
-        href="https://www.producthunt.com/posts/entretien-ai?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-entretien&#0045;ai"
+        href="https://www.producthunt.com/posts/cruxhire?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-entretien&#0045;ai"
         target="_blank"
         className="block dark:hidden"
       >
@@ -16,7 +16,7 @@ export const ProductHuntBadge = () => {
       </a>
 
       <a
-        href="https://www.producthunt.com/posts/entretien-ai?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-entretien&#0045;ai"
+        href="https://www.producthunt.com/posts/cruxhire?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-entretien&#0045;ai"
         target="_blank"
         className="hidden dark:block"
       >

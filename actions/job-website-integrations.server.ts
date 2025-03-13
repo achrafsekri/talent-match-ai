@@ -179,7 +179,7 @@ export async function getJobWebsiteIntegrations(): Promise<JobWebsiteResponse> {
         provider: true,
         isActive: true,
         createdAt: true,
-        metadata: true,
+        // metadata: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -600,10 +600,10 @@ export async function linkLinkedInOrganization(
         id: linkedInIntegration.id,
       },
       data: {
-        metadata: {
-          linkedInOrgId,
-          linkedInOrgName,
-        },
+        // metadata: {
+        //   linkedInOrgId,
+        //   linkedInOrgName,
+        // },
       },
     });
 

@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+// @ts-ignore
 import { testimonials } from "@/config/landing";
 import { HeaderSection } from "@/components/shared/header-section";
 

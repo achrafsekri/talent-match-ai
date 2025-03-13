@@ -3,8 +3,8 @@
   "version": "0.5",
   "private": true,
   "author": {
-    "name": "Ashref",
-    "url": "https://ashref.tn"
+    "name": "CruxHire AI",
+    "url": "https://cruxhire.com"
   },
   "scripts": {
     "dev": "next dev --turbo",

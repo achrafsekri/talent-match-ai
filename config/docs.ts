@@ -1,4 +1,16 @@
-import { DocsConfig } from "types";
+type DocsConfig = {
+  mainNav: {
+    title: string;
+    href: string;
+  }[];
+  sidebarNav: {
+    title: string;
+    items: {
+      title: string;
+      href: string;
+    }[];
+  }[];
+};
 
 export const docsConfig: DocsConfig = {
   mainNav: [

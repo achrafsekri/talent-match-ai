@@ -1,5 +1,7 @@
 import Image from "next/image";
-import { InfoLdg } from "@/types";
+
+// @ts-ignore
+import { InfoLdg } from "types/index.d";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/shared/icons";

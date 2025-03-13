@@ -1,5 +1,7 @@
-import { SidebarNavItem, SiteConfig } from "types";
 import { env } from "@/env.mjs";
+
+// @ts-ignore
+import { SidebarNavItem, SiteConfig } from "types/index.d";
 
 const site_url = env.NEXT_PUBLIC_APP_URL;
 

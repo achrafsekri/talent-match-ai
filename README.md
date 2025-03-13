@@ -236,7 +236,7 @@ Do not modify `.env.production` with real values as it's committed to the reposi
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/Ashref-dev/entretien-ai
+git clone https://github.com/Ashref-dev/cruxhire
 ```
 
 2. Install dependencies:

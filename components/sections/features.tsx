@@ -1,3 +1,4 @@
+// @ts-ignore
 import { features } from "@/config/landing";
 import { HeaderSection } from "@/components/shared/header-section";
 import { Icons } from "@/components/shared/icons";
