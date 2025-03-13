@@ -99,7 +99,7 @@ async function convertPDFToText(buffer: Buffer): Promise<{
     console.log("📄 Uploading PDF to S3:", { tempKey });
     await s3Client.send(
       new PutObjectCommand({
-        Bucket: process.env.AWS_S3_BUCKET!,
+        Bucket: process.env.CLOUD_AWS_S3_BUCKET!,
         Key: tempKey,
         Body: buffer,
         ContentType: "application/pdf",
@@ -110,7 +110,7 @@ async function convertPDFToText(buffer: Buffer): Promise<{
     // Generate presigned URL (valid for 5 minutes)
     console.log("🔗 Generating presigned URL");
     const command = new GetObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET!,
+      Bucket: process.env.CLOUD_AWS_S3_BUCKET!,
       Key: tempKey,
     });
     const presignedUrl = await getSignedUrl(s3Client, command, {
@@ -340,7 +340,7 @@ async function processFile(
   // Upload file to S3
   console.log("☁️ Uploading to S3:", { key });
   const uploadParams = {
-    Bucket: process.env.AWS_S3_BUCKET,
+    Bucket: process.env.CLOUD_AWS_S3_BUCKET,
     Key: key,
     Body: buffer,
     ContentType: file.type,
