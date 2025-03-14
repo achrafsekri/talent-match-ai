@@ -16,8 +16,7 @@ export default function HeroLanding() {
       <div className="container relative flex max-w-6xl flex-col items-center gap-5 text-center">
         {/* ORB */}
         <div
-          className="orb-fade-in absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2"
-          style={{ width: "120%", height: "700px" }}
+          className="orb-fade-in absolute left-1/2 top-1/2 -z-10 !h-[700px] !w-full -translate-x-1/2 -translate-y-1/2 pt-24 lg:!w-[120%] lg:pt-0"
         >
           <Orb
             hoverIntensity={0.1}
