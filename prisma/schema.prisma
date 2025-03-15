@@ -71,12 +71,18 @@ enum WorkplaceType {
   REMOTE
 }
 
-enum JobWebsiteProvider {
-  LINKEDIN
-  INDEED
-  GLASSDOOR
-  MONSTER
-  ZIPRECRUITER
+enum AtsProvider {
+  WORKDAY
+  GREENHOUSE
+  LEVER
+  TALEO
+  JOBVITE
+  BAMBOOHR
+  SMARTRECRUITERS
+  ICIMS
+  SUCCESSFACTORS
+  WORKABLE
+  OTHER
 }
 
 model Account {
@@ -156,66 +162,33 @@ model Tag {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  Document       Document?    @relation(fields: [documentId], references: [id])
-  documentId     String?
-
   @@map("tags")
 }
 
-model Document {
-  id             String         @id @default(cuid())
-  name           String
-  description    String?
-  url            String
-  type           DocumentType
-  isVectorized   Boolean        @default(false)
-  organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  tags           Tag[]
-  notes          DocumentNote[]
-  deletedAt      DateTime?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-
-  @@map("documents")
-}
-
-model DocumentNote {
-  id         String   @id @default(cuid())
-  content    String
-  documentId String
-  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([documentId])
-  @@map("document_notes")
-}
-
 model JobPost {
-  id                 String              @id @default(cuid())
-  title              String
-  description        String
-  companyName        String
-  status             PostStatus          @default(ACTIVE)
-  employmentType     EmploymentType      @default(FULL_TIME)
-  workplaceType      WorkplaceType       @default(ON_SITE)
-  location           String?
-  salary             String?
-  applicationUrl     String?
-  applicationEmail   String?
-  weights            SkillWeight[]
-  matches            Match[]
-  address            String?
-  userId             String
-  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId     String
-  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  archivedAt         DateTime?
-  deletedAt          DateTime?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  jobWebsitePostings JobWebsitePosting[]
+  id               String         @id @default(cuid())
+  title            String
+  description      String
+  companyName      String
+  status           PostStatus     @default(ACTIVE)
+  employmentType   EmploymentType @default(FULL_TIME)
+  workplaceType    WorkplaceType  @default(ON_SITE)
+  location         String?
+  salary           String?
+  applicationUrl   String?
+  applicationEmail String?
+  weights          SkillWeight[]
+  matches          Match[]
+  address          String?
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId   String
+  organization     Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  archivedAt       DateTime?
+  deletedAt        DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  atsPostings      AtsPosting[]
 
   @@index([organizationId])
   @@map("job_posts")
@@ -361,19 +334,18 @@ model Match {
 }
 
 model Organization {
-  id                     String                  @id @default(cuid())
-  name                   String
-  color                  String?
-  users                  User[]
-  invitations            OrganizationInvite[]
-  tags                   Tag[]
-  documents              Document[]
-  jobPosts               JobPost[]
-  candidates             Candidate[]
-  jobWebsiteIntegrations JobWebsiteIntegration[]
-  oauthStates            OAuthState[]
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
+  id              String               @id @default(cuid())
+  name            String
+  color           String?
+  users           User[]
+  invitations     OrganizationInvite[]
+  tags            Tag[]
+  jobPosts        JobPost[]
+  candidates      Candidate[]
+  atsIntegrations AtsIntegration[]
+  oauthStates     OAuthState[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
 
   @@map("organizations")
 }
@@ -393,50 +365,50 @@ model OrganizationInvite {
   @@map("organization_invites")
 }
 
-model JobWebsiteIntegration {
-  id             String              @id @default(cuid())
-  provider       JobWebsiteProvider
+model AtsIntegration {
+  id             String       @id @default(cuid())
+  provider       AtsProvider
   accessToken    String
   refreshToken   String?
   tokenExpiry    DateTime?
-  isActive       Boolean             @default(true)
-  metadata       Json? // Added metadata field to store additional information
+  isActive       Boolean      @default(true)
+  metadata       Json? // Store additional provider-specific information
   organizationId String
-  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  jobPostings    JobWebsitePosting[]
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  jobPostings    AtsPosting[]
 
   @@unique([provider, organizationId])
-  @@map("job_website_integrations")
+  @@map("ats_integrations")
 }
 
-model JobWebsitePosting {
-  id            String                @id @default(cuid())
-  externalId    String?
-  externalUrl   String?
-  status        String                @default("PENDING") // PENDING, POSTED, FAILED
+model AtsPosting {
+  id            String         @id @default(cuid())
+  externalId    String? // ID in the ATS system
+  externalUrl   String? // URL to the job in the ATS system
+  status        String         @default("PENDING") // PENDING, POSTED, FAILED
   postId        String
-  post          JobPost               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post          JobPost        @relation(fields: [postId], references: [id], onDelete: Cascade)
   integrationId String
-  integration   JobWebsiteIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
+  integration   AtsIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@unique([postId, integrationId])
-  @@map("job_website_postings")
+  @@map("ats_postings")
 }
 
 model OAuthState {
-  id             String             @id @default(cuid())
-  state          String             @unique
-  provider       JobWebsiteProvider
-  userId         String
+  id             String       @id @default(cuid())
+  state          String       @unique
+  provider       AtsProvider
   organizationId String
   expiresAt      DateTime
-  createdAt      DateTime           @default(now())
-  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  User           User?        @relation(fields: [userId], references: [id])
+  userId         String?
 
   @@index([state])
   @@map("oauth_states")
