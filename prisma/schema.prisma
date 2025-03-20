@@ -85,6 +85,25 @@ enum AtsProvider {
   OTHER
 }
 
+enum SocialLinkType {
+  LINKEDIN
+  X
+  TWITTER
+  FACEBOOK
+  GITHUB
+  YOUTUBE
+  INSTAGRAM
+  TIKTOK
+  MEDIUM
+  BLOG
+  OTHER
+}
+
+enum FlagType {
+  RED_FLAG
+  GREEN_FLAG
+}
+
 model Account {
   id                String   @id @default(cuid())
   userId            String
@@ -162,6 +181,7 @@ model Tag {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
   @@map("tags")
 }
 
@@ -207,12 +227,43 @@ model SkillWeight {
   @@map("skill_weights")
 }
 
+model SocialLink {
+  id          String         @id @default(cuid())
+  url         String
+  type        SocialLinkType
+  candidateId String
+  candidate   Candidate      @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("social_links")
+}
+
+model Flag {
+  id            String    @id @default(cuid())
+  type          FlagType
+  name          String
+  description   String?
+  reason        String?
+  relevantLinks String[]
+  weight        Int       @default(5) // 1-10 scale
+  candidateId   String
+  candidate     Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("flags")
+}
+
 model Candidate {
   id             String           @id @default(cuid())
   name           String
   email          String           @unique
   address        String?
   cvUrl          String
+  profilePicture String?
+  phoneNumber    String?
+  analysis       String?          @db.Text
   archivedAt     DateTime?
   deletedAt      DateTime?
   skills         CandidateSkill[]
@@ -220,12 +271,14 @@ model Candidate {
   achievements   Achievement[]
   matches        Match[]
   education      Education[]
+  socialLinks    SocialLink[]
   organizationId String
   organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   processing     Boolean          @default(true)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   certificates   Certificate[]
+  flags          Flag[]
 
   @@map("candidates")
 }
