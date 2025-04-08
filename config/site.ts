@@ -1,7 +1,6 @@
-import { env } from "@/env.mjs";
-
-// @ts-ignore
 import { SidebarNavItem, SiteConfig } from "types/index.d";
+
+import { env } from "@/env.mjs";
 
 const site_url = env.NEXT_PUBLIC_APP_URL;
 
@@ -12,13 +11,13 @@ export const siteConfig: SiteConfig = {
   url: site_url,
   ogImage: `${site_url}/_static/og.jpg`,
   links: {
-    gitHub: "https://github.com/Ashref-dev/talentmatch-ai",
-    twitter: "https://x.com/talentmatch_ai",
-    instagram: "https://www.instagram.com/talentmatch_ai/",
+    gitHub: "https://github.com/Ashref-dev/cruxhire",
+    twitter: "https://x.com/cruxhire_ai",
+    instagram: "https://www.instagram.com/cruxhire_ai/",
     facebook: "https://facebook.com/513241155206826",
-    bluesky: "https://bsky.app/profile/talentmatch-ai.com",
+    bluesky: "https://bsky.app/profile/cruxhire-ai.com",
   },
-  mailSupport: "support@talentmatch-ai.com",
+  mailSupport: "support@cruxhire.com",
 };
 
 export const SUPPORTED_LANGUAGES = {
@@ -34,7 +33,7 @@ export const footerLinks: SidebarNavItem[] = [
     title: "Company",
     items: [
       { title: "About", href: "/about" },
-      // { title: "Enterprise", href: "#" },
+      { title: "Enterprise", href: "#" },
       { title: "Terms", href: "/terms" },
       { title: "Privacy", href: "/privacy" },
     ],

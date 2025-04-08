@@ -6,11 +6,11 @@ import { getDashboardStats } from "@/lib/candidates";
 import { getCurrentUser } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import { CalendarEvents } from "@/components/calendar/calendar-events";
 import { DashboardHeader } from "@/components/dashboard/header";
@@ -29,7 +29,7 @@ const Page = async () => {
       {/* Header Section with Animated Welcome */}
       <div className="space-y-6">
         <DashboardHeader
-          heading="Welcome to TalentMatch AI Recruiting Platform"
+          heading="Welcome to CruxHire AI Recruiting Platform"
           text="Your AI-powered recruiting assistant"
         />
       </div>
