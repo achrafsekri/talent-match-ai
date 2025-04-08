@@ -85,6 +85,14 @@ enum AtsProvider {
   OTHER
 }
 
+enum JobWebsiteProvider {
+  LINKEDIN
+  INDEED
+  GLASSDOOR
+  MONSTER
+  ZIPRECRUITER
+}
+
 model Account {
   id                String   @id @default(cuid())
   userId            String
@@ -334,18 +342,19 @@ model Match {
 }
 
 model Organization {
-  id              String               @id @default(cuid())
-  name            String
-  color           String?
-  users           User[]
-  invitations     OrganizationInvite[]
-  tags            Tag[]
-  jobPosts        JobPost[]
-  candidates      Candidate[]
-  atsIntegrations AtsIntegration[]
-  oauthStates     OAuthState[]
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  id                    String                  @id @default(cuid())
+  name                  String
+  color                 String?
+  users                 User[]
+  invitations           OrganizationInvite[]
+  tags                  Tag[]
+  jobPosts              JobPost[]
+  candidates            Candidate[]
+  atsIntegrations       AtsIntegration[]
+  jobWebsiteIntegrations JobWebsiteIntegration[]
+  oauthStates           OAuthState[]
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
 
   @@map("organizations")
 }
@@ -412,4 +421,35 @@ model OAuthState {
 
   @@index([state])
   @@map("oauth_states")
+}
+
+model JobWebsiteIntegration {
+  id             String             @id @default(cuid())
+  provider       JobWebsiteProvider
+  accessToken    String
+  refreshToken   String?
+  isActive       Boolean            @default(true)
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  jobPostings    JobWebsitePosting[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([provider, organizationId])
+  @@map("job_website_integrations")
+}
+
+model JobWebsitePosting {
+  id            String                @id @default(cuid())
+  postId        String
+  status        String                @default("PENDING") // PENDING, POSTED, FAILED
+  integrationId String
+  externalId    String?               // LinkedIn's internal job ID
+  externalUrl   String?               // LinkedIn job URL
+  integration   JobWebsiteIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@unique([postId, integrationId])
+  @@map("job_website_postings")
 }

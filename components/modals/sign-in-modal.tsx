@@ -35,7 +35,7 @@ function SignInModal({
     setIsEmailLoading(true);
 
     try {
-      const result = await signIn("resend", {
+      const result = await signIn("nodemailer", {
         email,
         redirect: false,
       

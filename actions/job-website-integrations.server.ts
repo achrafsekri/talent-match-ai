@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { JobWebsiteProvider } from "@prisma/client";
+import { AtsProvider, JobWebsiteProvider } from "@prisma/client";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
@@ -120,7 +120,7 @@ export async function initiateOAuthFlow(provider: string): Promise<JobWebsiteRes
         state,
         userId: user.id,
         organizationId: user.organizationId,
-        provider: provider as JobWebsiteProvider,
+        provider: provider as AtsProvider,
         expiresAt: new Date(Date.now() + 1000 * 60 * 10), // 10 minutes expiry
       },
     });

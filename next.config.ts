@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { withContentlayer } from "next-contentlayer2";
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -7,6 +8,8 @@ import { withContentlayer } from "next-contentlayer2";
 import "./env.mjs";
 
 const nextConfig: NextConfig = {
+  SKIP_ENV_VALIDATION: true,
+
   output: "standalone",
 
   experimental: {
@@ -35,11 +38,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
- 
+
   serverExternalPackages: [
     "@prisma/client",
     "@react-email/components",
-    "@react-email/tailwind",                           
+    "@react-email/tailwind",
   ],
 };
 
