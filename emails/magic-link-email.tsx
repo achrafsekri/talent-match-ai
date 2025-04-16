@@ -1,15 +1,15 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Img,
-    Preview,
-    Section,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Img,
+  Preview,
+  Section,
+  Text,
 } from "@react-email/components";
 
 import { env } from "@/env.mjs";
@@ -67,7 +67,7 @@ export default function MagicLinkEmail({
             <Text style={paragraph}>
               {mailType === "login"
                 ? "We noticed a sign-in attempt from your device. Use the secure button below to access your account."
-                : "Thank you for choosing CruxHire AI. We're excited to help you prepare for your upcoming interviews. Just one quick step to get started:"}
+                : "Thank you for choosing CruxHire AI. Just one quick step to get started:"}
             </Text>
 
             <Button href={actionUrl} style={button}>

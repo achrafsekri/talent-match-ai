@@ -8,7 +8,7 @@ export default function DashboardLoading() {
       {/* Header Section */}
       <div className="space-y-6">
         <DashboardHeader
-          heading="Welcome to TalentMatch AI Recruiting Platform"
+          heading="Welcome to CruxHire AI Recruiting Platform"
           text="Your AI-powered recruiting assistant"
         />
       </div>

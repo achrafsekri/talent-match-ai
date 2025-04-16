@@ -18,8 +18,6 @@ import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
-import { ModeToggle } from "./mode-toggle";
-
 interface NavBarProps {
   scroll?: boolean;
   large?: boolean;
@@ -85,7 +83,6 @@ export function NavBar({ scroll = false }: NavBarProps) {
         </div>
         {/* Right section: User actions */}
         <div className="flex items-center space-x-3">
-   
           {documentation ? (
             <div className="hidden flex-1 items-center space-x-4 sm:justify-end lg:flex">
               <div className="hidden lg:flex lg:grow-0">
@@ -128,11 +125,10 @@ export function NavBar({ scroll = false }: NavBarProps) {
               variant="default"
               size="sm"
               rounded="full"
-              disabled={true}
+             
               onClick={() => setShowSignInModal(true)}
             >
-              {/* <span>Sign In</span> */}
-              <span>Coming Soon</span>
+              <span>Sign In</span>
               <Icons.arrowRight className="size-4" />
             </Button>
           ) : (

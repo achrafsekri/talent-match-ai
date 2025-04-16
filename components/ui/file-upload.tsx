@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { UploadIcon } from "lucide-react";
 import { Accept, useDropzone } from "react-dropzone";
@@ -113,7 +113,7 @@ export const FileUpload = ({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         layout
-                        className="w-fit flex-shrink-0 rounded-lg px-2 py-1 text-sm text-neutral-600 shadow-input dark:bg-neutral-800 dark:text-white"
+                        className="w-fit shrink-0 rounded-lg px-2 py-1 text-sm text-neutral-600 shadow-input dark:bg-neutral-800 dark:text-white"
                       >
                         {(file.size / (1024 * 1024)).toFixed(2)} MB
                       </motion.p>
@@ -128,7 +128,7 @@ export const FileUpload = ({
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 text-neutral-600 dark:text-neutral-200"
+                          className="size-4 text-neutral-600 dark:text-neutral-200"
                           viewBox="0 0 24 24"
                           strokeWidth="2"
                           stroke="currentColor"
@@ -175,7 +175,7 @@ export const FileUpload = ({
                   damping: 20,
                 }}
                 className={cn(
-                  "relative z-[3] mx-auto mt-4 flex h-32 w-full max-w-[8rem] items-center justify-center rounded-md bg-white group-hover/file:shadow-2xl dark:bg-neutral-900",
+                  "relative z-[3] mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md bg-white group-hover/file:shadow-2xl dark:bg-neutral-900",
                   "shadow-[0px_10px_50px_rgba(0,0,0,0.1)]",
                 )}
               >
@@ -186,10 +186,10 @@ export const FileUpload = ({
                     className="flex flex-col items-center text-neutral-600"
                   >
                     Drop it
-                    <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                    <UploadIcon className="size-4 text-neutral-600 dark:text-neutral-400" />
                   </motion.p>
                 ) : (
-                  <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
+                  <UploadIcon className="size-4 text-neutral-600 dark:text-neutral-300" />
                 )}
               </motion.div>
             )}
@@ -197,7 +197,7 @@ export const FileUpload = ({
             {!files.length && (
               <motion.div
                 variants={secondaryVariant}
-                className="absolute inset-0 z-[2] mx-auto mt-4 flex h-32 w-full max-w-[8rem] items-center justify-center rounded-md border border-dashed border-sky-400 bg-transparent opacity-0"
+                className="absolute inset-0 z-[2] mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md border border-dashed border-primary bg-transparent opacity-0"
               ></motion.div>
             )}
           </div>
@@ -211,14 +211,14 @@ export function GridPattern() {
   const columns = 41;
   const rows = 11;
   return (
-    <div className="flex flex-shrink-0 scale-105 flex-wrap items-center justify-center gap-x-px gap-y-px bg-gray-100 dark:bg-neutral-900">
+    <div className="flex shrink-0 scale-105 flex-wrap items-center justify-center gap-px bg-gray-100 dark:bg-neutral-900">
       {Array.from({ length: rows }).map((_, row) =>
         Array.from({ length: columns }).map((_, col) => {
           const index = row * columns + col;
           return (
             <div
               key={`${col}-${row}`}
-              className={`flex h-10 w-10 flex-shrink-0 rounded-[2px] ${
+              className={`flex size-10 shrink-0 rounded-[2px] ${
                 index % 2 === 0
                   ? "bg-gray-50 dark:bg-neutral-950"
                   : "bg-gray-50 shadow-[0px_0px_1px_3px_rgba(255,255,255,1)_inset] dark:bg-neutral-950 dark:shadow-[0px_0px_1px_3px_rgba(0,0,0,1)_inset]"
